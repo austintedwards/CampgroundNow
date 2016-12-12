@@ -108,5 +108,11 @@ $(function(){
      });
    }
 
+   function mapLocation(location){
+     $.get("https://api.mapbox.com/styles/v1/austke/ciwmng4f100es2ppak5unxguy.html?title=true&access_token=pk.eyJ1IjoiYXVzdGtlIiwiYSI6ImNpd21uZTB1bDAwNm8yenF4ZmtlbjkzenUifQ.CohFKxWoYGrFXQDoRvZWag#9.08/39.7058/-105.1120",function(map){
+
+     });
+   }
+
 
 });
