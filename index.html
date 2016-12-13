@@ -20,15 +20,25 @@
       <input type = "text" name = "location" placeholder = "Click GPS or Input Town" id = "location">
       <input type = "button" name= "search" id = "search" value = "Search">
     </form>
-        <div id='map' style='width: 500px; height: 400px;'></div>
-        <script>
-        mapboxgl.accessToken = 'pk.eyJ1IjoiYXVzdGtlIiwiYSI6ImNpd21uZTB1bDAwNm8yenF4ZmtlbjkzenUifQ.CohFKxWoYGrFXQDoRvZWag';
-        var map = new mapboxgl.Map({
-            container: 'map',
-            center: [-105, 39.7],
-            zoom: 7,
-            style: 'mapbox://styles/austke/ciwmng4f100es2ppak5unxguy'
-        });
-        </script>
+    <div id='map' style='width: 500px; height: 400px;'></div>
+    <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiYXVzdGtlIiwiYSI6ImNpd21uZTB1bDAwNm8yenF4ZmtlbjkzenUifQ.CohFKxWoYGrFXQDoRvZWag';
+    var map = new mapboxgl.Map({
+        container: 'map',
+        center: [-105, 39.7],
+        zoom: 7,
+        style: 'mapbox://styles/austke/ciwmng4f100es2ppak5unxguy'
+      });
+
+    var popup = new mapboxgl.Popup({closeOnClick: false})
+      .setLngLat([-105, 39.7])
+      .setHTML('<h6>*</h6>')
+      .addTo(map);
+
+    </script>
+    <p class = "list">Campground List:</p>
+    <ul class = "campList">
+
+    </ul>
   </body>
 </html>

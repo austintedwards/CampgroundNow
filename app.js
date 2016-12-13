@@ -1,5 +1,4 @@
 $(function(){
-  getCampsites();
 //API Get
   function getCampsites(){
     $.get("http://api.amp.active.com/camping/campgrounds?pstate=CO&api_key=zbbcdmvv4g9dj5xxnhu4r4hh", function(xml){
@@ -75,7 +74,7 @@ $(function(){
        campLocals.sewer = campItem.sitesWithSewerHookup;
        campSpots.push(campLocals);
      }
-     console.log (campSpots);
+     localStorage.setItem("campSpots", JSON.stringify(campSpots));
    }
 
 //GPS
@@ -108,11 +107,47 @@ $(function(){
      });
    }
 
-   function mapLocation(location){
-     $.get("https://api.mapbox.com/styles/v1/austke/ciwmng4f100es2ppak5unxguy.html?title=true&access_token=pk.eyJ1IjoiYXVzdGtlIiwiYSI6ImNpd21uZTB1bDAwNm8yenF4ZmtlbjkzenUifQ.CohFKxWoYGrFXQDoRvZWag#9.08/39.7058/-105.1120",function(map){
+//using search to find location of input
+   $("#search").click(function(){
+     event.preventDefault();
+     var town = $("#location").val();
+     locationInput(town);
+     getCampsites();
+     var $spot = localStorage.getItem("spot");
+     var spot = JSON.parse($spot);
+     var $campSpots = localStorage.getItem("campSpots");
+     var campSpots = JSON.parse($campSpots);
+     distance(spot, campSpots);
+   });
 
+   function locationInput(place){
+     $.get("https://maps.googleapis.com/maps/api/geocode/json?address="+place+"&key=AIzaSyAFSPs5znb5ggZ7ZyajBCJMdBiKEXV6UG0",function(town){
+       var spot = town.results[0].geometry.location;
+      localStorage.setItem("spot", "");
+      localStorage.setItem("spot", JSON.stringify(spot));
      });
    }
+
+//finding the closest parks
+   function distance(spot, campSpots){
+     var list = [];
+     var orderList = [];
+     for (var i = 0; i < campSpots.length; i++) {
+       var campLong = campSpots[i].longitude;
+       var campLat = campSpots[i].latitude;
+       var d = Math.sqrt((spot.lat - campLat)*(spot.lat - campLat) + (spot.lng - campLong)*(spot.lng - campLong));
+       campSpots[i].dist = d;
+     }
+     campSpots.sort(function(a,b){
+      if(a.dist < b.dist)
+        return -1;
+      if(a.dist > b.dist)
+        return 1;
+      return 0;
+    });
+     console.log(campSpots);
+   }
+   
 
 
 });
