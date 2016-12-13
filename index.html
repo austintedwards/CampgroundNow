@@ -21,7 +21,7 @@
       <input type = "button" name= "search" id = "search" value = "Search">
     </form>
     <div id='map' style='width: 500px; height: 400px;'></div>
-    <script>
+    <script class = "map">
     mapboxgl.accessToken = 'pk.eyJ1IjoiYXVzdGtlIiwiYSI6ImNpd21uZTB1bDAwNm8yenF4ZmtlbjkzenUifQ.CohFKxWoYGrFXQDoRvZWag';
     var map = new mapboxgl.Map({
         container: 'map',
@@ -29,11 +29,6 @@
         zoom: 7,
         style: 'mapbox://styles/austke/ciwmng4f100es2ppak5unxguy'
       });
-
-    var popup = new mapboxgl.Popup({closeOnClick: false})
-      .setLngLat([-105, 39.7])
-      .setHTML('<h6>*</h6>')
-      .addTo(map);
 
     </script>
     <p class = "list">Campground List:</p>

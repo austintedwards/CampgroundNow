@@ -145,9 +145,20 @@ $(function(){
         return 1;
       return 0;
     });
-     console.log(campSpots);
+    console.log(campSpots);
+     campList(campSpots);
    }
-   
+
+   function campList(campSpots){
+     for (var i = 0; i < 10; i++) {
+       var li = $("<ol>"+(i+1)+". "+campSpots[i].name+"</ol>");
+       $(".campList").append(li);
+       $(".map").append("var popup"+i+"= new mapboxgl.Popup({closeOnClick: false})")
+         .append(".setLngLat(["+campSpots[i].longitude+", "+campSpots[i].latitude+"39.7])")
+         .append(".setHTML('<p>"+(i+1)+"</p>')")
+         .append(".addTo(map)");
+      }
+   }
 
 
 });
