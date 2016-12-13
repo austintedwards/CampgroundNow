@@ -9,16 +9,41 @@ body{
   /*background-color: blanchedalmond;*/
 }
 
-form{
+.input{
   display: flex;
   font-family: "copperplate";
+  align-content: flex-start;
+}
+
+.checklist{
+  display: flex;
+  flex-direction: row;
+  align-self: flex-end;
+  font-size: 5px;
+  justify-content: space-around;
+
+}
+
+#location{
+  display: flex;
+  width: 40%;
+
 }
 
 #lumber{
   display: flex;
-  flex-direction: row-reverse;
   width: 10%;
   height: 10%;
+}
+
+.label{
+  font-size: 25px;
+}
+
+#search{
+  display: flex;
+  justify-content: center;
+  height: 100%;
 }
 
 #GPS{

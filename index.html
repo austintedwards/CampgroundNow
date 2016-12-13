@@ -5,7 +5,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="app.js"></script>
     <script src='https://api.mapbox.com/mapbox-gl-js/v0.28.0/mapbox-gl.js'></script>
-    <link href='https://api.mapbox.com/mapbox-gl-js/v0.28.0/mapbox-gl.css' rel='stylesheet' />
     <link rel="stylesheet" type="text/css" href="style.css">
     <!--Import Google Icon Font-->
     <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -17,18 +16,37 @@
     <title>Campground Now</title>
   </head>
   <body>
+  <div class="container">
+
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script type="text/javascript" src="materialize/js/materialize.min.js"></script>
     <h1>
       Campground Now
       <img id="lumber" src = "https://media.giphy.com/media/88np7RwIbvA76/giphy.gif">
     </h1>
-    <form action = "" method = "get">
-      <label for ="location">Location: </label>
+
+    <div class = "row">
+    <div class="col s12">
+    <form action = "index.html" method = "get" class = "input">
+      <label for ="location" class = "label">Location: </label>
       <input type = "image" src = "https://jaumemitjans.files.wordpress.com/2013/03/icon-location-in-blue.png" name = "GPS" id = "GPS" />
       <input type = "text" name = "location" placeholder = "Click GPS or Input Town" id = "location">
       <input type = "button" name= "search" id = "search" value = "Search">
     </form>
+    <form action = "index.html" method = "get" class = "checklist">
+      <input type="checkbox" id="available" checked="" value = "Y" />
+      <label for="available">Campground Available</label>
+      <input type="checkbox" id="pets" value = "N" />
+      <label for="pets">Pets Allowed</label>
+      <input type="checkbox" id="water" value = "N" />
+      <label for="water">Water Hookup</label>
+      <input type="checkbox" id="sewer" value = "N" />
+      <label for="sewer">Sewer Hookup</label>
+      <input type="checkbox" id="power" value = "N" />
+      <label for="power">Power Hookup</label>
+    </form>
+    </div>
+    <div class="col s7.5">
     <div id='map' style='width: 500px; height: 400px;'></div>
     <script class = "map">
     mapboxgl.accessToken = 'pk.eyJ1IjoiYXVzdGtlIiwiYSI6ImNpd21uZTB1bDAwNm8yenF4ZmtlbjkzenUifQ.CohFKxWoYGrFXQDoRvZWag';
@@ -38,11 +56,16 @@
         zoom: 7,
         style: 'mapbox://styles/austke/ciwmng4f100es2ppak5unxguy'
       });
-
     </script>
+    </div>
+    <div class="col s4">
     <p class = "list">Campground List:</p>
     <ul class = "campList">
-
     </ul>
+    </div>
+
+    </div>
+  </div>
+
   </body>
 </html>

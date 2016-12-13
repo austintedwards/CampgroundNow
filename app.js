@@ -118,7 +118,11 @@ $(function(){
        campLocals.photo = campItem.faciltyPhoto;
        campLocals.power = campItem.sitesWithAmps;
        campLocals.sewer = campItem.sitesWithSewerHookup;
-       campSpots.push(campLocals);
+       if (campLocals.status==="Y" && $('#available').val()==="Y"){
+         campSpots.push(campLocals);
+       }else if($('#available').val()==="N"){
+         campSpots.push(campLocals);
+       }
      }
      distance(spot, campSpots);
    }
@@ -141,7 +145,6 @@ $(function(){
         return 1;
       return 0;
     });
-    console.log(campSpots);
      campList(campSpots);
    }
 
@@ -155,6 +158,50 @@ $(function(){
          .append(".addTo(map)");
       }
    }
+
+//available status checkbar
+  $('#available').change(function(){
+       if($(this).val()==='Y'){
+            $(this).val('N');
+       }else{
+            $(this).val('Y');
+       }
+     });
+
+//pets status checkbar
+ $('#pets').change(function(){
+      if($(this).val()==='Y'){
+           $(this).val('N');
+      }else{
+           $(this).val('Y');
+      }
+    });
+//water status checkbar
+$('#water').change(function(){
+     if($(this).val()==='Y'){
+          $(this).val('N');
+     }else{
+          $(this).val('Y');
+     }
+   });
+//sewer status checkbar
+$('#sewer').change(function(){
+    if($(this).val()==='Y'){
+         $(this).val('N');
+    }else{
+         $(this).val('Y');
+    }
+  });
+//power
+$('#power').change(function(){
+    if($(this).val()==='Y'){
+         $(this).val('N');
+    }else{
+         $(this).val('Y');
+    }
+    console.log("power",this);
+  });
+
 
 
 });
