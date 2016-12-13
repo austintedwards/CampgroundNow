@@ -1,10 +1,56 @@
 $(function(){
+  //GPS
+  $("#GPS").click(function(){
+    event.preventDefault();
+    GPS();
+  });
+  function GPS(){
+     var options = {
+       enableHighAccuracy: true,
+       timeout: 5000,
+       maximumAge: 0
+     };
+     function success(pos) {
+       var crd = pos.coords;
+       var location = {lat:crd.latitude, long:crd.longitude};
+       currentCity(location);
+     }
+     function error(err) {
+       console.warn('ERROR(' + err.code + '): ' + err.message);
+     }
+     navigator.geolocation.getCurrentPosition(success, error, options);
+   }
+
+//inputs location grom GPS
+   function currentCity(location){
+     $.get("https://maps.googleapis.com/maps/api/geocode/json?latlng="+location.lat+","+location.long+"&key=AIzaSyAFSPs5znb5ggZ7ZyajBCJMdBiKEXV6UG0",function(city){
+       var town = city.results[4].formatted_address;
+       $("#location").val(town);
+     });
+   }
+
+  //using search to find location of input
+     $("#search").click(function(){
+       event.preventDefault();
+       $(".campList").html("");
+       var town = $("#location").val();
+       locationInput(town);
+     });
+
+     function locationInput(place){
+       $.get("https://maps.googleapis.com/maps/api/geocode/json?address="+place+"&key=AIzaSyAFSPs5znb5ggZ7ZyajBCJMdBiKEXV6UG0",function(town){
+         var spot = town.results[0].geometry.location;
+         var state = town.results[0].address_components[2].short_name;
+         getCampsites(state, spot);
+       });
+     }
+
 //API Get
-  function getCampsites(){
-    $.get("http://api.amp.active.com/camping/campgrounds?pstate=CO&api_key=zbbcdmvv4g9dj5xxnhu4r4hh", function(xml){
-    var master_obj = xmlToJson(xml);
-    getCamp(master_obj);
-    });
+  function getCampsites(state, spot){
+    $.get("http://api.amp.active.com/camping/campgrounds?pstate="+state+"&api_key=zbbcdmvv4g9dj5xxnhu4r4hh", function(xml){
+      var master_obj = xmlToJson(xml);
+      getCamp(master_obj, spot);
+      });
   }
 
 //xml to JSON
@@ -50,13 +96,13 @@ $(function(){
     }
 
 //getting a set object variable
-  function getCamp(results){
+  function getCamp(results, spot){
     var camps = results.resultset.result;
-    campLocations(camps);
+    campLocations(camps, spot);
    }
 
 //cleaning up the objects
-   function campLocations(camps){
+   function campLocations(camps, spot){
       var campSpots = [];
      for (var i = 0; i < camps.length; i++) {
        var campItem = camps[i]["@attributes"];
@@ -74,59 +120,9 @@ $(function(){
        campLocals.sewer = campItem.sitesWithSewerHookup;
        campSpots.push(campLocals);
      }
-     localStorage.setItem("campSpots", JSON.stringify(campSpots));
-   }
-
-//GPS
-  $("#GPS").click(function(){
-    event.preventDefault();
-    GPS();
-  });
-  function GPS(){
-     var options = {
-       enableHighAccuracy: true,
-       timeout: 5000,
-       maximumAge: 0
-     };
-     function success(pos) {
-       var crd = pos.coords;
-       var location = {lat:crd.latitude, long:crd.longitude};
-       currentCity(location);
-     }
-     function error(err) {
-       console.warn('ERROR(' + err.code + '): ' + err.message);
-     }
-     navigator.geolocation.getCurrentPosition(success, error, options);
-   }
-
-//inputs location grom GPS
-   function currentCity(location){
-     $.get("https://maps.googleapis.com/maps/api/geocode/json?latlng="+location.lat+","+location.long+"&key=AIzaSyAFSPs5znb5ggZ7ZyajBCJMdBiKEXV6UG0",function(city){
-       var town = city.results[4].formatted_address;
-       $("#location").val(town);
-     });
-   }
-
-//using search to find location of input
-   $("#search").click(function(){
-     event.preventDefault();
-     var town = $("#location").val();
-     locationInput(town);
-     getCampsites();
-     var $spot = localStorage.getItem("spot");
-     var spot = JSON.parse($spot);
-     var $campSpots = localStorage.getItem("campSpots");
-     var campSpots = JSON.parse($campSpots);
      distance(spot, campSpots);
-   });
-
-   function locationInput(place){
-     $.get("https://maps.googleapis.com/maps/api/geocode/json?address="+place+"&key=AIzaSyAFSPs5znb5ggZ7ZyajBCJMdBiKEXV6UG0",function(town){
-       var spot = town.results[0].geometry.location;
-      localStorage.setItem("spot", "");
-      localStorage.setItem("spot", JSON.stringify(spot));
-     });
    }
+
 
 //finding the closest parks
    function distance(spot, campSpots){
@@ -154,8 +150,8 @@ $(function(){
        var li = $("<ol>"+(i+1)+". "+campSpots[i].name+"</ol>");
        $(".campList").append(li);
        $(".map").append("var popup"+i+"= new mapboxgl.Popup({closeOnClick: false})")
-         .append(".setLngLat(["+campSpots[i].longitude+", "+campSpots[i].latitude+"39.7])")
-         .append(".setHTML('<p>"+(i+1)+"</p>')")
+         .append(".setLngLat(["+campSpots[i].longitude+", "+campSpots[i].latitude+"])")
+         .append(".setHTML("+(i+1)+")")
          .append(".addTo(map)");
       }
    }
