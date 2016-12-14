@@ -118,12 +118,79 @@ $(function(){
        campLocals.photo = campItem.faciltyPhoto;
        campLocals.power = campItem.sitesWithAmps;
        campLocals.sewer = campItem.sitesWithSewerHookup;
-       if (campLocals.status==="Y" && $('#available').val()==="Y"){
-         campSpots.push(campLocals);
-       }else if($('#available').val()==="N"){
-         campSpots.push(campLocals);
-       }
+       campSpots.push(campLocals);
      }
+//available filters
+       function isAvailable(obj){
+         return obj === "Y";
+        }
+       function filterByStatus(campSpots){
+         if (isAvailable(campSpots.status)){
+           return true;
+         }
+       return false;
+        }
+        if ($("#available").val()==="Y"){
+           campSpots = campSpots.filter(filterByStatus);
+         }else{
+         }
+//available pets
+     function hasPets(obj){
+       return obj === "Y";
+      }
+     function filterByPets(campSpots){
+       if (isAvailable(campSpots.pets)){
+         return true;
+       }
+     return false;
+      }
+      if ($("#pets").val()==="Y"){
+         campSpots = campSpots.filter(filterByPets);
+       }else{
+       }
+//available water
+      function hasWater(obj){
+        return obj === "Y";
+       }
+      function filterByWater(campSpots){
+        if (isAvailable(campSpots.water)){
+          return true;
+        }
+      return false;
+       }
+       if ($("#water").val()==="Y"){
+          campSpots = campSpots.filter(filterByWater);
+        }else{
+        }
+//available sewer
+    function hasSewer(obj){
+      return obj === "Y";
+     }
+    function filterBySewer(campSpots){
+      if (isAvailable(campSpots.sewer)){
+        return true;
+      }
+    return false;
+     }
+     if ($("#sewer").val()==="Y"){
+        campSpots = campSpots.filter(filterBySewer);
+      }else{
+      }
+//available power
+  function hasPower(obj){
+    return obj === "Y";
+   }
+  function filterByPower(campSpots){
+    if (isAvailable(campSpots.power)){
+      return true;
+    }
+  return false;
+   }
+   if ($("#sewer").val()==="Y"){
+      campSpots = campSpots.filter(filterByPower);
+    }else{
+    }
+
      distance(spot, campSpots);
    }
 
@@ -145,18 +212,27 @@ $(function(){
         return 1;
       return 0;
     });
-     campList(campSpots);
+
+    if (campSpots.length>10){
+    for (var j = 0; j < 10; j++) {
+     campList(campSpots,j);
+    }
+    }else{
+      for (var k = 0; k < campSpots.length; k++) {
+       campList(campSpots,k);
+      }
+    }
+    mapLoad(campSpots);
    }
 
-   function campList(campSpots){
-     for (var i = 0; i < 10; i++) {
+   function campList(campSpots,i){
        var li = $("<ol>"+(i+1)+". "+campSpots[i].name+"</ol>");
        $(".campList").append(li);
        $(".map").append("var popup"+i+"= new mapboxgl.Popup({closeOnClick: false})")
          .append(".setLngLat(["+campSpots[i].longitude+", "+campSpots[i].latitude+"])")
          .append(".setHTML("+(i+1)+")")
          .append(".addTo(map)");
-      }
+
    }
 
 //available status checkbar
@@ -199,9 +275,74 @@ $('#power').change(function(){
     }else{
          $(this).val('Y');
     }
-    console.log("power",this);
   });
 
 
+mapboxgl.accessToken = 'pk.eyJ1IjoiYXVzdGtlIiwiYSI6ImNpd21uZTB1bDAwNm8yenF4ZmtlbjkzenUifQ.CohFKxWoYGrFXQDoRvZWag';
+var map = new mapboxgl.Map({
+    container: 'map',
+    center: [-105, 39.7],
+    zoom: 7,
+    style: 'mapbox://styles/austke/ciwmng4f100es2ppak5unxguy'
+  });
+  function mapLoad(campSpots){
+    console.log(campSpots);
+
+    var points ={
+          "type": "geojson",
+          "data": {
+              "type": "FeatureCollection",
+              "features": []
+          }
+      };
+  if (campSpots.length<10){
+    for (var i = 0; i < campSpots.length; i++) {
+        inputPoints(points, campSpots, i);
+    }
+  }else{
+    for (var j = 0; j < 10; j++) {
+        inputPoints(points, campSpots, j);
+    }
+  }
+      console.log(points);
+
+      map.addSource("points", points);
+      map.addLayer({
+          "id": "points",
+          "type": "symbol",
+          "source": "points",
+          "layout": {
+              "icon-image": "{icon}-15",
+              "text-field": "{title}",
+              "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+              "text-offset": [0, 0.6],
+              "text-anchor": "top"
+          }
+      });
+    }
+
+    function inputPoints(points, campSpots, i){
+      points.data.features.push({
+          "type": "Feature",
+          "geometry": {
+              "type": "Point",
+              "coordinates": [campSpots[i].longitude, campSpots[i].latitude]
+          },
+          "properties": {
+              "title": i+1,
+              "icon": "campsite"
+          }
+      });
+
+    }
+
 
 });
+
+  function openNav() {
+      document.getElementById("mySidenav").style.width = "300px";
+  }
+
+  function closeNav() {
+      document.getElementById("mySidenav").style.width = "0";
+  }
