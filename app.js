@@ -24,8 +24,8 @@ $(function(){
 //inputs location grom GPS
    function currentCity(location){
      $.get("https://maps.googleapis.com/maps/api/geocode/json?latlng="+location.lat+","+location.long+"&key=AIzaSyAFSPs5znb5ggZ7ZyajBCJMdBiKEXV6UG0",function(city){
-       var town = city.results[4].formatted_address;
-       $("#location").val(town);
+       var address = city.results[0].formatted_address;
+       $("#location").val(address);
      });
    }
 
@@ -40,7 +40,12 @@ $(function(){
      function locationInput(place){
        $.get("https://maps.googleapis.com/maps/api/geocode/json?address="+place+"&key=AIzaSyAFSPs5znb5ggZ7ZyajBCJMdBiKEXV6UG0",function(town){
          var spot = town.results[0].geometry.location;
-         var state = town.results[0].address_components[2].short_name;
+         var findState = town.results[0].address_components;
+         if (findState.length > 7){
+           var state = findState[5].short_name;
+         }else{
+           state = findState[2].short_name;
+         }
          getCampsites(state, spot);
        });
      }
@@ -222,6 +227,12 @@ $(function(){
        campList(campSpots,k);
       }
     }
+        map.flyTo({
+          center: [
+            campSpots[0].longitude, campSpots[0].latitude
+          ],
+          zoom: 9
+        });
     mapLoad(campSpots);
    }
 
@@ -277,17 +288,16 @@ $('#power').change(function(){
     }
   });
 
-
+//Map creator
 mapboxgl.accessToken = 'pk.eyJ1IjoiYXVzdGtlIiwiYSI6ImNpd21uZTB1bDAwNm8yenF4ZmtlbjkzenUifQ.CohFKxWoYGrFXQDoRvZWag';
 var map = new mapboxgl.Map({
     container: 'map',
     center: [-105, 39.7],
+    attributionControl: true,
     zoom: 7,
     style: 'mapbox://styles/austke/ciwmng4f100es2ppak5unxguy'
   });
   function mapLoad(campSpots){
-    console.log(campSpots);
-
     var points ={
           "type": "geojson",
           "data": {
@@ -295,6 +305,8 @@ var map = new mapboxgl.Map({
               "features": []
           }
       };
+
+  //points for loop
   if (campSpots.length<10){
     for (var i = 0; i < campSpots.length; i++) {
         inputPoints(points, campSpots, i);
@@ -304,10 +316,36 @@ var map = new mapboxgl.Map({
         inputPoints(points, campSpots, j);
     }
   }
-      console.log(points);
+//points JSON maker
+  function inputPoints(points, campSpots, i){
+    points.data.features.push({
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [campSpots[i].longitude, campSpots[i].latitude]
+        },
+        "properties": {
+            "title": i+1,
+            "icon": "campsite",
+        }
+    });
+  }
+        if (map.getSource("points") === undefined){
+        var mapLink = map.addSource("points", points);
+        addL();
+        console.log("first",map.getSource("points"));
+        }else{
+            mapLink = map.removeSource("points");
+            addL();
+            mapLink = map.addSource("points", points);
+            console.log("second",map.getSource("points"));
+        }
 
-      map.addSource("points", points);
-      map.addLayer({
+
+
+//map layer
+      function addL(){
+        map.addLayer({
           "id": "points",
           "type": "symbol",
           "source": "points",
@@ -320,25 +358,30 @@ var map = new mapboxgl.Map({
           }
       });
     }
+      //to click links for maps
+      mapLink.on("click", function(p){
+        var lngDif = [];
+        var latDif = [];
+        for (var i = 0; i < campSpots.length; i++) {
+          lngDif[i] = p.lngLat.lng-campSpots[i].longitude;
+          latDif[i] = p.lngLat.lat-campSpots[i].latitude;
+          if (lngDif[i] > -0.01 && lngDif[i] < 0.01 && latDif[i] > -0.01 && latDif[i] < 0.01){
+            var popup = new mapboxgl.Popup({closeOnClick: true})
+                .setLngLat([campSpots[i].longitude, campSpots[i].latitude])
+                .setHTML(campSpots[i].name)
+                .addTo(map);
+            }else{
 
-    function inputPoints(points, campSpots, i){
-      points.data.features.push({
-          "type": "Feature",
-          "geometry": {
-              "type": "Point",
-              "coordinates": [campSpots[i].longitude, campSpots[i].latitude]
-          },
-          "properties": {
-              "title": i+1,
-              "icon": "campsite"
           }
+        }
       });
-
     }
 
 
-});
 
+
+});
+//side nav
   function openNav() {
       document.getElementById("mySidenav").style.width = "300px";
   }
