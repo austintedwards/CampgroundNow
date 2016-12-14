@@ -53,6 +53,7 @@ $(function(){
 //API Get
   function getCampsites(state, spot){
     $.get("http://api.amp.active.com/camping/campgrounds?pstate="+state+"&api_key=zbbcdmvv4g9dj5xxnhu4r4hh", function(xml){
+      console.log(xml);
       var master_obj = xmlToJson(xml);
       getCamp(master_obj, spot);
       });
@@ -237,7 +238,7 @@ $(function(){
    }
 
    function campList(campSpots,i){
-       var li = $("<ol>"+(i+1)+". "+campSpots[i].name+"</ol>");
+       var li = $("<ol>"+(i+1)+". <a href='https://www.google.com/maps/search/"+campSpots[i].name+"/"+campSpots[i].latitude+","+campSpots[i].longitude+",17z'target='_blank'>"+campSpots[i].name+"</a></ol>");
        $(".campList").append(li);
        $(".map").append("var popup"+i+"= new mapboxgl.Popup({closeOnClick: false})")
          .append(".setLngLat(["+campSpots[i].longitude+", "+campSpots[i].latitude+"])")
@@ -333,12 +334,10 @@ var map = new mapboxgl.Map({
         if (map.getSource("points") === undefined){
         var mapLink = map.addSource("points", points);
         addL();
-        console.log("first",map.getSource("points"));
         }else{
             mapLink = map.removeSource("points");
             addL();
             mapLink = map.addSource("points", points);
-            console.log("second",map.getSource("points"));
         }
 
 
@@ -368,7 +367,7 @@ var map = new mapboxgl.Map({
           if (lngDif[i] > -0.01 && lngDif[i] < 0.01 && latDif[i] > -0.01 && latDif[i] < 0.01){
             var popup = new mapboxgl.Popup({closeOnClick: true})
                 .setLngLat([campSpots[i].longitude, campSpots[i].latitude])
-                .setHTML(campSpots[i].name)
+                .setHTML("<a href='https://www.google.com/maps/search/"+campSpots[i].name+"/"+campSpots[i].latitude+","+campSpots[i].longitude+",17z'target='_blank'>"+campSpots[i].name+"</a>")
                 .addTo(map);
             }else{
 
