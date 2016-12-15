@@ -52,7 +52,7 @@ $(function(){
 
 //API Get
   function getCampsites(state, spot){
-    $.get("http://api.amp.active.com/camping/campgrounds?pstate="+state+"&api_key=zbbcdmvv4g9dj5xxnhu4r4hh", function(xml){
+    $.get("https://api.amp.active.com/camping/campgrounds?pstate="+state+"&api_key=zbbcdmvv4g9dj5xxnhu4r4hh", function(xml){
       console.log(xml);
       var master_obj = xmlToJson(xml);
       getCamp(master_obj, spot);
