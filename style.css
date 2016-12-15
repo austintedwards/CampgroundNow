@@ -3,6 +3,14 @@ body {
 }
 
 
+
+#fire {
+  width: 20px;
+  font-size: 20px;
+}
+
+
+
 .input{
   display: flex;
 
@@ -83,6 +91,7 @@ color: saddlebrown;
   flex-direction: column;
   align-self: flex-end;
   font-size: 10px;
+  font-family: "woody";
   justify-content: space-between;
 
 }
@@ -114,6 +123,7 @@ color: saddlebrown;
 
 .list{
   display: flex;
+  justify-content: flex-start;
   font-family: "woody";
 }
 

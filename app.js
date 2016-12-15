@@ -1,5 +1,42 @@
 $(function(){
-  //GPS
+  //filter buttons
+  $("#available").on("click",function(){
+  if ($(".available").attr("src")==='fire.png'){
+    $(".available").attr("src",'log.png');
+  }else{
+    $(".available").attr("src",'fire.png');
+  }
+  });
+  $("#pets").on("click",function(){
+  if ($(".pets").attr("src")==='fire.png'){
+    $(".pets").attr("src",'log.png');
+  }else{
+    $(".pets").attr("src",'fire.png');
+  }
+  });
+  $("#water").on("click",function(){
+  if ($(".water").attr("src")==='fire.png'){
+    $(".water").attr("src",'log.png');
+  }else{
+    $(".water").attr("src",'fire.png');
+  }
+  });
+  $("#sewer").on("click",function(){
+  if ($(".sewer").attr("src")==='fire.png'){
+    $(".sewer").attr("src",'log.png');
+  }else{
+    $(".sewer").attr("src",'fire.png');
+  }
+  });
+  $("#power").on("click",function(){
+  if ($(".power").attr("src")==='fire.png'){
+    $(".power").attr("src",'log.png');
+  }else{
+    $(".power").attr("src",'fire.png');
+  }
+  });
+
+//GPS
   $("#GPS").click(function(){
     event.preventDefault();
     GPS();
@@ -136,7 +173,7 @@ $(function(){
          }
        return false;
         }
-        if ($("#available").val()==="Y"){
+        if ($(".available").attr("src")==='fire.png'){
            campSpots = campSpots.filter(filterByStatus);
          }else{
          }
@@ -150,7 +187,7 @@ $(function(){
        }
      return false;
       }
-      if ($("#pets").val()==="Y"){
+      if ($(".pets").attr("src")==='fire.png'){
          campSpots = campSpots.filter(filterByPets);
        }else{
        }
@@ -164,7 +201,7 @@ $(function(){
         }
       return false;
        }
-       if ($("#water").val()==="Y"){
+       if ($(".water").attr("src")==='fire.png'){
           campSpots = campSpots.filter(filterByWater);
         }else{
         }
@@ -178,7 +215,7 @@ $(function(){
       }
     return false;
      }
-     if ($("#sewer").val()==="Y"){
+     if ($(".sewer").attr("src")==='fire.png'){
         campSpots = campSpots.filter(filterBySewer);
       }else{
       }
@@ -192,11 +229,11 @@ $(function(){
     }
   return false;
    }
-   if ($("#sewer").val()==="Y"){
+   if ($(".power").attr("src")==='fire.png'){
       campSpots = campSpots.filter(filterByPower);
     }else{
     }
-
+console.log(campSpots);
      distance(spot, campSpots);
    }
 
@@ -240,54 +277,7 @@ $(function(){
    function campList(campSpots,i){
        var li = $("<ol>"+(i+1)+". <a href='https://www.google.com/maps/search/"+campSpots[i].name+"/"+campSpots[i].latitude+","+campSpots[i].longitude+",17z'target='_blank'>"+campSpots[i].name+"</a></ol>");
        $(".campList").append(li);
-       $(".map").append("var popup"+i+"= new mapboxgl.Popup({closeOnClick: false})")
-         .append(".setLngLat(["+campSpots[i].longitude+", "+campSpots[i].latitude+"])")
-         .append(".setHTML("+(i+1)+")")
-         .append(".addTo(map)");
-
    }
-
-//available status checkbar
-  $('#available').change(function(){
-       if($(this).val()==='Y'){
-            $(this).val('N');
-       }else{
-            $(this).val('Y');
-       }
-     });
-
-//pets status checkbar
- $('#pets').change(function(){
-      if($(this).val()==='Y'){
-           $(this).val('N');
-      }else{
-           $(this).val('Y');
-      }
-    });
-//water status checkbar
-$('#water').change(function(){
-     if($(this).val()==='Y'){
-          $(this).val('N');
-     }else{
-          $(this).val('Y');
-     }
-   });
-//sewer status checkbar
-$('#sewer').change(function(){
-    if($(this).val()==='Y'){
-         $(this).val('N');
-    }else{
-         $(this).val('Y');
-    }
-  });
-//power
-$('#power').change(function(){
-    if($(this).val()==='Y'){
-         $(this).val('N');
-    }else{
-         $(this).val('Y');
-    }
-  });
 
 //Map creator
 mapboxgl.accessToken = 'pk.eyJ1IjoiYXVzdGtlIiwiYSI6ImNpd21uZTB1bDAwNm8yenF4ZmtlbjkzenUifQ.CohFKxWoYGrFXQDoRvZWag';
